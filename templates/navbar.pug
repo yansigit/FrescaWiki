@@ -1,0 +1,15 @@
+nav.navbar.is-primary
+    div.container
+        div.navbar-brand
+            a.navbar-item(href='/') IT 스터디 위키
+        div.navbar-menu.is-active
+            div.navbar-start
+                a.navbar-item.text-centered(href="/recent") ❗ 최근 문서
+                a.navbar-item.text-centered(href="/random") 🔃 랜덤 문서
+            div.navbar-end
+                div.navbar-item.is-paddingless.has-text-centered
+                    form.field.has-addons.is-inline-flex(action='/search' method='POST')
+                        span.control
+                            input.input.is-radiusless(type='text' name='search')
+                        span.control
+                            button.button.is-radiusless ▶

@@ -1,0 +1,13 @@
+extends layout.pug
+
+block content
+    section.column
+        article.message.is-medium.margin_top.is-danger
+            .message-header
+                p 경고!
+                a.delete.is-medium(href="/w/{{.}}" aria-label="delete")
+            .message-body.has-background-white.has-text-centered
+                p.has-text-weight-bold 정말 삭제하겠습니까?
+                form.buttons.is-centered(action="POST" target="/remove/{{.}}")
+                    button.button.is-danger YES
+                    a.button.is-warning(href="/w/{{.}}") NO

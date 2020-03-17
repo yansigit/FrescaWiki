@@ -1,0 +1,24 @@
+extends layout.pug
+
+block content
+    section.column.is-three-quarters-desktop
+        .box
+            | {{ with .Doc }}
+            h1.title {{.Title}} 편집
+            form(action="/edit/{{.Title}}" method="POST")
+                input(type="hidden" name="title" value="{{.Title}}")
+                .field
+                    .control
+                        textarea.textarea.is-primary#editorSection(name="body") {{.Body}}
+                .field
+                    .control
+                        input.button.is-primary(type="submit")
+        .box
+            h1.title 미리보기
+            .content
+                | {{.Title}}
+            | {{ end }}
+    link(rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css")
+    script(src="https://unpkg.com/easymde/dist/easymde.min.js")
+    script(src="/static/scripts/editor.js")
+    include sidebar.pug

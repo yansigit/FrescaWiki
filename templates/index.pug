@@ -1,0 +1,25 @@
+extends layout.pug
+
+block content
+    section.column.is-three-quarters-desktop
+        .box.is-radiusless
+            | {{ with .Doc }}
+            h1.title#docTitle {{.Title}}
+            .field.has-addons.has-addons-fullwidth
+                .control
+                    a.button.is-fullwidth.has-background-white-bis.is-radiusless(href="/history/{{.Title}}") 역사
+                .control
+                    a.button.is-fullwidth.has-background-white-bis.is-radiusless(href="/edit/{{.Title}}") 편집
+                .control
+                    a.button.is-fullwidth.has-background-white-bis.is-radiusless(href="/discuss/{{.Title}}") 토론
+            article.content
+                if .Body
+
+                else
+                    h1 존재하지 않는 문서입니다
+                    h4 새로
+                        a(href="/edit/{{.Title}}") {{.Title}}
+                        | 문서를 작성하세요
+                | {{.RenderedBody}}
+            | {{ end }}
+    include sidebar.pug

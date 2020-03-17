@@ -1,0 +1,34 @@
+@charset "utf-8";
+@import "bulma";
+@import "../fonts/fonts.css";
+
+i.nav-icon {
+  margin-right: 10px;
+}
+.content {
+  h1,h2 {
+    padding-bottom: .3em;
+    border-bottom: 1px solid #eaecef;
+  }
+}
+#docTitle {
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  font-size: 2.8rem;
+}
+.margin_top {
+  margin-top: $size-2;
+}
+.footer {
+  padding: 3rem 1.5rem 3rem;
+}
+@include desktop {
+  #recentBox {
+    margin-top: $size-2
+  }
+}
+@include touch {
+  section.column.is-three-quarters-desktop {
+    margin-top: $size-3
+  }
+}

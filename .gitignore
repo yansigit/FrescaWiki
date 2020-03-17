@@ -1,0 +1,5 @@
+/tmp/
+.idea
+go.sum
+bin
+app/setup/bindata.*
