@@ -11,7 +11,7 @@ import (
 
 func Initialize() *iris.Application {
 	app := iris.New()
-	developing := false
+	developing := true
 
 	_ = mgm.SetDefaultConfig(nil, "Wiki_DB", options.Client().ApplyURI("mongodb://localhost:27017"))
 	_, err := mgm.Coll(&model.Doc{}).Indexes().CreateOne(mgm.Ctx(), mongo.IndexModel{

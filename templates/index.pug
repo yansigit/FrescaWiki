@@ -12,9 +12,15 @@ block content
                     a.button.is-fullwidth.has-background-white-bis.is-radiusless(href="/edit/{{.Title}}") 편집
                 .control
                     a.button.is-fullwidth.has-background-white-bis.is-radiusless(href="/discuss/{{.Title}}") 토론
+            | {{ end }}
+            if .ParentDoc
+                p.box.is-shadowless.is-radiusless.is-marginless 🔹 상위문서:
+                    a(href="/w/{{.ParentDoc}}") {{.ParentDoc}}
+            | {{ with .Doc }}
             article.content
                 if .Body
-
+                    script(src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js")
+                    script hljs.initHighlightingOnLoad();
                 else
                     h1 존재하지 않는 문서입니다
                     h4 새로

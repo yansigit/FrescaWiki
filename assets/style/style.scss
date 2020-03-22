@@ -22,6 +22,9 @@ i.nav-icon {
 .footer {
   padding: 3rem 1.5rem 3rem;
 }
+.recent-item {
+  margin: 1rem 0;
+}
 @include desktop {
   #recentBox {
     margin-top: $size-2

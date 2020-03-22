@@ -6,13 +6,18 @@ import (
 	"github.com/Kamva/mgm"
 	"github.com/kataras/iris/v12"
 	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/extension"
+	"github.com/yuin/goldmark/parser"
+	"github.com/yuin/goldmark/renderer/html"
 	"go.mongodb.org/mongo-driver/mongo"
 	"html/template"
+	"path"
+	"strings"
 )
 
 func Search(ctx iris.Context) {
 	docName := ctx.PostValue("search")
-	ctx.Redirect("/w/" + docName, 302)
+	ctx.Redirect("/w/"+docName, 302)
 }
 
 func Recent(ctx iris.Context) {
@@ -21,26 +26,45 @@ func Recent(ctx iris.Context) {
 
 func Random(ctx iris.Context) {
 	docName := "랜덤"
-	ctx.Redirect("/w/" + docName, 302)
+	ctx.Redirect("/w/"+docName, 302)
 }
 
 func EditGet(ctx iris.Context) {
 	docName := ctx.Params().GetString("doc_name")
 	doc, _ := model.SearchDocByTitle(docName)
 	doc.Title = docName
-	args := &model.Arg{
-		Doc:    *doc,
-		Recent: []model.Recent{},
-	}
-	ctx.View("edit.pug", args)
+	recent, _ := model.GetRecent()
+
+	ctx.ViewData("Doc", *doc)
+	ctx.ViewData("Recent", recent)
+	ctx.View("edit.pug")
 }
 
 func EditPost(ctx iris.Context) {
 	title := ctx.PostValue("title")
 	body := ctx.PostValue("body")
 
+	if strings.TrimSpace(body) == "" {
+		doc, err := model.SearchDocByTitle(title)
+		if err != mongo.ErrNoDocuments {
+			err = mgm.Coll(doc).Delete(doc)
+			ctx.Redirect("/w/"+title, 302)
+			return
+		}
+	}
+
 	var buf bytes.Buffer
-	if err := goldmark.Convert([]byte(body), &buf); err != nil {
+	md := goldmark.New(
+		goldmark.WithExtensions(extension.GFM),
+		goldmark.WithParserOptions(
+			parser.WithAutoHeadingID(),
+		),
+		goldmark.WithRendererOptions(
+			html.WithHardWraps(),
+			html.WithXHTML(),
+		),
+	)
+	if err := md.Convert([]byte(body), &buf); err != nil {
 		panic(err)
 	}
 
@@ -66,24 +90,20 @@ func EditPost(ctx iris.Context) {
 	ctx.Redirect("/w/"+title, 302)
 }
 
-func RemoveGet(ctx iris.Context) {
-	docName := ctx.Params().GetString("doc_name")
-	ctx.View("remove.pug", docName)
-}
-
-func RemovePost(ctx iris.Context) {
-
-}
-
 func Index(ctx iris.Context) {
 	docName := ctx.Params().GetString("doc_name")
 	doc, _ := model.SearchDocByTitle(docName)
 
 	doc.Title = docName
 	recent, _ := model.GetRecent()
-	args := &model.Arg{
-		Doc:    *doc,
-		Recent: recent,
+
+	var parentDoc string
+	if strings.Contains(docName, "/") {
+		parentDoc = path.Dir(docName)
 	}
-	ctx.View("index.pug", args)
+
+	ctx.ViewData("Doc", doc)
+	ctx.ViewData("ParentDoc", parentDoc)
+	ctx.ViewData("Recent", recent)
+	ctx.View("index.pug")
 }

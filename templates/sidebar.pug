@@ -1,8 +1,10 @@
 aside.column#recentBox
-    div.box.is-radiusless
-        | {{ with .Recent }}
-        each _,_ in .
-            div
+    div.box.is-radiusless.is-marginless
+        h1.is-size-4.has-text-weight-bold 최근 변경
+    div.box.is-radiusless.is-marginless
+        | {{ range .Recent }}
+            div.recent-item
                 a.has-text-weight-semibold(href='/w/{{.Title}}') {{.Title}}
                 time.is-block {{.Date}}
+
         | {{ end }}

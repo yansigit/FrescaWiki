@@ -9395,6 +9395,10 @@ i.nav-icon {
   padding: 3rem 1.5rem 3rem;
 }
 
+.recent-item {
+  margin: 1rem 0;
+}
+
 @media screen and (min-width: 1024px) {
   #recentBox {
     margin-top: 2.5rem;

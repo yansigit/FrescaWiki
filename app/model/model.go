@@ -5,7 +5,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"html/template"
-	"time"
 )
 
 type Arg struct {
@@ -14,15 +13,15 @@ type Arg struct {
 }
 
 type Doc struct {
-	mgm.DefaultModel				`bson:",inline"`
-	Title            string      	`json:"title" bson:"title"`
-	Body             string         `json:"body" bson:"body"`
-	RenderedBody     template.HTML  `json:"renderedBody" bson:"renderedBody"`
+	mgm.DefaultModel `bson:",inline"`
+	Title            string        `json:"title" bson:"title"`
+	Body             string        `json:"body" bson:"body"`
+	RenderedBody     template.HTML `json:"renderedBody" bson:"renderedBody"`
 }
 
 type Recent struct {
 	Title string
-	Date  time.Time
+	Date  string
 }
 
 func NewDoc(title string, body string) *Doc {
@@ -32,7 +31,7 @@ func NewDoc(title string, body string) *Doc {
 	}
 }
 
-func NewRecent(title string, date time.Time) *Recent {
+func NewRecent(title string, date string) *Recent {
 	return &Recent{
 		Title: title,
 		Date:  date,
@@ -44,12 +43,12 @@ func GetRecent() (recent []Recent, err error) {
 	coll := mgm.Coll(&Doc{})
 	findOptions := options.Find()
 	findOptions.SetLimit(10)
-	findOptions.SetSort(bson.M{"_id":1})
-	err = coll.SimpleFind(&docs, bson.M{}, options.Find())
+	findOptions.SetSort(bson.M{"updated_at": -1})
+	err = coll.SimpleFind(&docs, bson.M{}, findOptions)
 
 	if err == nil {
 		for _, doc := range docs {
-			newRecent := NewRecent(doc.Title, doc.UpdatedAt)
+			newRecent := NewRecent(doc.Title, doc.UpdatedAt.Format("1월 2일 PM 03:04"))
 			recent = append(recent, *newRecent)
 		}
 	}
