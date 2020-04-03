@@ -38,11 +38,11 @@ func NewRecent(title string, date string) *Recent {
 	}
 }
 
-func GetRecent() (recent []Recent, err error) {
+func GetRecent(limit int64) (recent []Recent, err error) {
 	var docs []Doc
 	coll := mgm.Coll(&Doc{})
 	findOptions := options.Find()
-	findOptions.SetLimit(10)
+	findOptions.SetLimit(limit)
 	findOptions.SetSort(bson.M{"updated_at": -1})
 	err = coll.SimpleFind(&docs, bson.M{}, findOptions)
 

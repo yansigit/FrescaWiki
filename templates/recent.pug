@@ -1,3 +1,11 @@
 extends layout.pug
 
 block content
+    section.column.is-full
+        .box.is-radiusless
+            | {{ range .Recent }}
+            div.recent-item
+                a.has-text-weight-semibold(href='/w/{{.Title}}') {{.Title}}
+                time.is-block {{.Date}}
+
+            | {{ end }}

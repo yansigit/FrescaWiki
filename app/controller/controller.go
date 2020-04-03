@@ -21,6 +21,16 @@ func Search(ctx iris.Context) {
 }
 
 func Recent(ctx iris.Context) {
+	recent, _ := model.GetRecent(300)
+	childDocs := make(map[string]string)
+
+	for _, doc := range recent {
+		if strings.Contains(doc.Title, "/") {
+			parentDoc := path.Dir(doc.Title)
+			childDocs[parentDoc] = path.Base(doc.Title)
+		}
+	}
+	ctx.ViewData("Recent", recent)
 	ctx.View("recent.pug")
 }
 
@@ -33,7 +43,7 @@ func EditGet(ctx iris.Context) {
 	docName := ctx.Params().GetString("doc_name")
 	doc, _ := model.SearchDocByTitle(docName)
 	doc.Title = docName
-	recent, _ := model.GetRecent()
+	recent, _ := model.GetRecent(10)
 
 	ctx.ViewData("Doc", *doc)
 	ctx.ViewData("Recent", recent)
@@ -95,7 +105,7 @@ func Index(ctx iris.Context) {
 	doc, _ := model.SearchDocByTitle(docName)
 
 	doc.Title = docName
-	recent, _ := model.GetRecent()
+	recent, _ := model.GetRecent(10)
 
 	var parentDoc string
 	if strings.Contains(docName, "/") {
